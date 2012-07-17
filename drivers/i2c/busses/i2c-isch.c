@@ -56,6 +56,8 @@
 #define SCH_WORD_DATA		0x03
 #define SCH_BLOCK_DATA		0x05
 
+#define SMBIOSIZE	8
+
 static unsigned short sch_smba;
 static struct i2c_adapter sch_adapter;
 
@@ -258,7 +260,7 @@ static int __devinit smbus_sch_probe(struct platform_device *dev)
 	if (!res)
 		return -EBUSY;
 
-	if (!request_region(res->start, resource_size(res), dev->name)) {
+	if (!request_region(res->start, SMBIOSIZE, dev->name)) {
 		dev_err(&dev->dev, "SMBus region 0x%x already in use!\n",
 			sch_smba);
 		return -EBUSY;
@@ -277,7 +279,7 @@ static int __devinit smbus_sch_probe(struct platform_device *dev)
 	retval = i2c_add_adapter(&sch_adapter);
 	if (retval) {
 		dev_err(&dev->dev, "Couldn't register adapter!\n");
-		release_region(res->start, resource_size(res));
+		release_region(res->start, SMBIOSIZE);
 		sch_smba = 0;
 	}
 
@@ -290,7 +292,7 @@ static int __devexit smbus_sch_remove(struct platform_device *pdev)
 	if (sch_smba) {
 		i2c_del_adapter(&sch_adapter);
 		res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-		release_region(res->start, resource_size(res));
+		release_region(res->start, SMBIOSIZE);
 		sch_smba = 0;
 	}
 
