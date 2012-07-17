@@ -425,6 +425,14 @@ config BACKLIGHT_AS3711
 	  If you have an Austrian Microsystems AS3711 say Y to enable the
 	  backlight driver.
 
+config BACKLIGHT_OPENFRAME
+	tristate "Openframe Backlight Driver"
+	depends on BACKLIGHT_CLASS_DEVICE && PCI && X86
+	default n
+	help
+	  If you have an OpenFrame device say Y to enable the
+	  backlight driver.
+
 endif # BACKLIGHT_CLASS_DEVICE
 
 endif # BACKLIGHT_LCD_SUPPORT
