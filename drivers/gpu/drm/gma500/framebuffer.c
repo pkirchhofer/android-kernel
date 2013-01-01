@@ -349,7 +349,7 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	struct device *device = &dev->pdev->dev;
 	int size;
 	int ret;
-	struct gtt_range *backing;
+	struct gtt_range *backing = NULL;
 	u32 bpp, depth;
 	int gtt_roll = 0;
 	int pitch_lines = 0;
@@ -367,18 +367,21 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	if (bpp == 24)
 		bpp = 32;
 
+
+// GTT acceleration leads to graphical corruption on the Joggler, disable it for now
+
+/*
 	do {
-		/*
-		 * Acceleration via the GTT requires pitch to be
-		 * power of two aligned. Preferably page but less
-		 * is ok with some fonts
-		 */
+		//
+		// Acceleration via the GTT requires pitch to be
+		// power of two aligned. Preferably page but less
+		// is ok with some fonts
         	mode_cmd.pitches[0] =  ALIGN(mode_cmd.width * ((bpp + 7) / 8), 4096 >> pitch_lines);
 
         	size = mode_cmd.pitches[0] * mode_cmd.height;
         	size = ALIGN(size, PAGE_SIZE);
 
-		/* Allocate the fb in the GTT with stolen page backing */
+		// Allocate the fb in the GTT with stolen page backing
 		backing = psbfb_alloc(dev, size);
 
 		if (pitch_lines)
@@ -387,6 +390,7 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 			pitch_lines = 1;
 		gtt_roll++;
 	} while (backing == NULL && pitch_lines <= 16);
+*/
 
 	/* The final pitch we accepted if we succeeded */
 	pitch_lines /= 2;
