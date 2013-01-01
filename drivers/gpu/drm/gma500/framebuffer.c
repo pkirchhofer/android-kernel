@@ -353,6 +353,10 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	int gtt_roll = 0;
 	int pitch_lines = 0;
 
+	/* Force 16 bit framebuffer */
+	sizes->surface_bpp = 16;
+	sizes->surface_depth = 16;
+
 	mode_cmd.width = sizes->surface_width;
 	mode_cmd.height = sizes->surface_height;
 	bpp = sizes->surface_bpp;
