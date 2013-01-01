@@ -74,6 +74,8 @@ static int psb_backlight_setup(struct drm_device *dev)
 	uint32_t value;
 	uint32_t blc_pwm_precision_factor;
 
+	return 0;
+
 	/* get bl_max_freq and pol from dev_priv*/
 	if (!dev_priv->lvds_bl) {
 		dev_err(dev->dev, "Has no valid LVDS backlight info\n");
