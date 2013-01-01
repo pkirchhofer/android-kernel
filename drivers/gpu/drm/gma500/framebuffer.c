@@ -363,6 +363,8 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	bpp = sizes->surface_bpp;
 	depth = sizes->surface_depth;
 
+	printk(KERN_DEBUG "[GMA500] width %d height %d bpp %d depth %d\n", sizes->surface_width, sizes->surface_height, sizes->surface_bpp, sizes->surface_depth);
+
 	/* No 24bit packed */
 	if (bpp == 24)
 		bpp = 32;
@@ -416,6 +418,7 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 			return -ENOMEM;
 	}
 
+	printk(KERN_DEBUG "[GMA500] got backing @ 0x%p (size %d)\n", backing, size);
 	memset(dev_priv->vram_addr + backing->offset, 0, size);
 
 	mutex_lock(&dev->struct_mutex);
@@ -443,6 +446,8 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	strcpy(info->fix.id, "psbfb");
 
 	info->flags = FBINFO_DEFAULT;
+	printk(KERN_DEBUG "[GMA500] accel_2d %d pitch_lines %d gtt_roll %d\n", dev_priv->ops->accel_2d, pitch_lines, gtt_roll);
+	printk(KERN_DEBUG "[GMA500] ops 0x%p roll_ops 0x%p unaccel_ops 0x%p\n", &psbfb_ops, &psbfb_roll_ops, &psbfb_unaccel_ops);
 	if (dev_priv->ops->accel_2d && pitch_lines > 8)	/* 2D engine */
 		info->fbops = &psbfb_ops;
 	else if (gtt_roll) {	/* GTT rolling seems best */
@@ -450,6 +455,11 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 		info->flags |= FBINFO_HWACCEL_YPAN;
 	} else	/* Software */
 		info->fbops = &psbfb_unaccel_ops;
+
+	/* Always enable unaccelerated ops */
+	//info->fbops = &psbfb_unaccel_ops;
+
+	printk(KERN_DEBUG "[GMA500] info->fbops 0x%p\n", info->fbops);
 
 	ret = fb_alloc_cmap(&info->cmap, 256, 0);
 	if (ret) {
