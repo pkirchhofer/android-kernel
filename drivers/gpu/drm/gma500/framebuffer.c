@@ -348,7 +348,7 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	struct device *device = &dev->pdev->dev;
 	int size;
 	int ret;
-	struct gtt_range *backing;
+	struct gtt_range *backing = NULL;
 	u32 bpp, depth;
 	int gtt_roll = 0;
 	int pitch_lines = 0;
@@ -366,6 +366,11 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 	if (bpp == 24)
 		bpp = 32;
 
+
+// GTT acceleration leads to graphical corruption on the Joggler, disable it for now
+#undef GMA500_ENABLE_GTT
+
+#ifdef GMA500_ENABLE_GTT
 	do {
 		/*
 		 * Acceleration via the GTT requires pitch to be
@@ -386,6 +391,7 @@ static int psbfb_create(struct psb_fbdev *fbdev,
 			pitch_lines = 1;
 		gtt_roll++;
 	} while (backing == NULL && pitch_lines <= 16);
+#endif /* GMA500_ENABLE_GTT */
 
 	/* The final pitch we accepted if we succeeded */
 	pitch_lines /= 2;
