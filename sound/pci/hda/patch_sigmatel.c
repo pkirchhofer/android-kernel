@@ -5260,14 +5260,12 @@ static int patch_stac9202(struct hda_codec *codec)
 	struct sigmatel_spec *spec;
 	int err;
 
-	spec  = kzalloc(sizeof(*spec), GFP_KERNEL);
-	if (spec == NULL)
-		return -ENOMEM;
+	err = alloc_stac_spec(codec, ARRAY_SIZE(stac9202_pin_nids),
+			      stac9202_pin_nids);
+	if (err < 0)
+		return err;
 
-	codec->no_trigger_sense = 1;
-	codec->spec = spec;
-	spec->num_pins = ARRAY_SIZE(stac9202_pin_nids);
-	spec->pin_nids = stac9202_pin_nids;
+	spec = codec->spec;
 	spec->board_config = snd_hda_check_board_config(codec, STAC_9202_MODELS,
 							stac9202_models,
 							stac9202_cfg_tbl);
