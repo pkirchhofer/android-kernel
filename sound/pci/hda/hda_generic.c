@@ -782,6 +782,10 @@ static void path_power_down_sync(struct hda_codec *codec, struct nid_path *path)
 /* turn on/off EAPD on the given pin */
 static void set_pin_eapd(struct hda_codec *codec, hda_nid_t pin, bool enable)
 {
+	// Joggler Workaround: Speaker EAPD is controlled by pin 0x07
+	if (pin == 0x0a)
+		pin = 0x07;
+
 	struct hda_gen_spec *spec = codec->spec;
 	if (spec->own_eapd_ctl ||
 	    !(snd_hda_query_pin_caps(codec, pin) & AC_PINCAP_EAPD))

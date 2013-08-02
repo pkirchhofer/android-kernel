@@ -3817,7 +3817,7 @@ static int patch_stac925x(struct hda_codec *codec)
 
 	spec = codec->spec;
 	spec->linear_tone_beep = 1;
-	spec->gen.own_eapd_ctl = 1;
+	//spec->gen.own_eapd_ctl = 1;
 
 	codec->patch_ops = stac_patch_ops;
 
